@@ -45,9 +45,12 @@ architecture Behavioral of servo is
   signal servo_helper : std_logic := '0';
 
   --XESS
-  -- Connections between the shift-register module and the subtractor.
+  -- Connections between the shift-register module and the servo.
   signal toServo_s     : std_logic_vector(11 downto 0);  -- From PC to servo.
   signal fromServo_s   : std_logic_vector(22 downto 0);   -- From servo to PC.
+  -- Connections between the shift-register module and the RAM.
+  signal toRAM_s     : std_logic_vector(11 downto 0);  -- From PC to RAM.
+  signal fromRAM_s   : std_logic_vector(11 downto 0);   -- From RAM to PC.
 
   --input
   alias resetv_i is toServo_s(11 downto 11);
@@ -66,7 +69,9 @@ architecture Behavioral of servo is
   signal drck_s        : std_logic;     -- Bit shift clock.
   signal tdi_s         : std_logic;     -- Bits from host PC to the blinker.
   signal tdo_s         : std_logic;     -- Bits from blinker to the host PC.
-
+  signal tdoServo_s    : std_logic;
+  signal tdoRAM_s      : std_logic;
+  
 begin
 
   reset_i <= resetv_i(11);
@@ -79,7 +84,7 @@ begin
 -- extra inputs:
 -- outputs     : clk_1MHz
 ----------------------------------------------------------------------------------
-  DCM_SP_inst : DCM_SP
+  DCM_SP_1MHz : DCM_SP
     generic map (
       CLKFX_DIVIDE   => 24, 
       CLKFX_MULTIPLY => 2
@@ -204,39 +209,8 @@ begin
     end if;
   end process;
 
-  -- XESS
-  -------------------------------------------------------------------------
-  -- JTAG entry point.
-  -------------------------------------------------------------------------
 
-  -- Main entry point for the JTAG signals between the PC and the FPGA.
-  UBscanToHostIo : BscanToHostIo
-    port map (
-      inShiftDr_o => inShiftDr_s,
-      drck_o      => drck_s,
-      tdi_o       => tdi_s,
-      tdo_i       => tdo_s
-      );
-
-  -------------------------------------------------------------------------
-  -- Shift-register.
-  -------------------------------------------------------------------------
-
-  -- This is the shift-register module between blinker and JTAG entry point.
-  UHostIoToBlinker : HostIoToDut
-    generic map (ID_G => "00001001")    -- The identifier used by the PC.
-    port map (
-      -- Connections to the BscanToHostIo JTAG entry-point module.
-      inShiftDr_i     => inShiftDr_s,
-      drck_i          => drck_s,
-      tdi_i           => tdi_s,
-      tdo_o           => tdo_s,
-      -- Connections to the blinker.
-      vectorToDut_o   => toServo_s,   -- From PC to servo.
-      vectorFromDut_i => fromServo_s  -- From servo to PC.
-      );
-
-
+  -- DEBUG
 ----------------------------------------------------------------------------------
 -- DIJON pulse measurement
 --
@@ -280,5 +254,60 @@ meas_pulse : process(servo_helper, clk_1MHz, reset_i) is
   
   --pulselen <= pos_i;
   
+
+
+  -- XESS
+  -------------------------------------------------------------------------
+  -- JTAG entry point.
+  -------------------------------------------------------------------------
+
+  -- Main entry point for the JTAG signals between the PC and the FPGA.
+  UBscanToHostIo : BscanToHostIo
+    port map (
+      inShiftDr_o => inShiftDr_s,
+      drck_o      => drck_s,
+      tdi_o       => tdi_s,
+      tdo_i       => tdo_s
+      );
+  tdo_s <= tdoServo_s or tdoRAM_s;
+  -------------------------------------------------------------------------
+  -- Shift-register 1 servo pos in, pulselen out
+  -------------------------------------------------------------------------
+
+  -- This is the shift-register module between servo and JTAG entry point.
+  UHostIoToServo : HostIoToDut
+    generic map (ID_G => "00001001")    -- The identifier used by the PC.
+    port map (
+      -- Connections to the BscanToHostIo JTAG entry-point module.
+      inShiftDr_i     => inShiftDr_s,
+      drck_i          => drck_s,
+      tdi_i           => tdi_s,
+      tdo_o           => tdoServo_s,
+      -- Connections to the blinker.
+      vectorToDut_o   => toServo_s,   -- From PC to servo.
+      vectorFromDut_i => fromServo_s  -- From servo to PC.
+      );
+
+  -------------------------------------------------------------------------
+  -- Shift-register 2 data logger out
+  -------------------------------------------------------------------------
+
+  -- This is the shift-register module between data logger RAM and JTAG entry point.
+  UHostIoToRAM : HostIoToDut
+    generic map (ID_G => "00001010")    -- The identifier used by the PC.
+    port map (
+      -- Connections to the BscanToHostIo JTAG entry-point module.
+      inShiftDr_i     => inShiftDr_s,
+      drck_i          => drck_s,
+      tdi_i           => tdi_s,
+      tdo_o           => tdoRAM_s,
+      -- Connections to the RAM.
+      vectorToDut_o   => toRAM_s,   -- From PC to servo.
+      vectorFromDut_i => fromRAM_s  -- From servo to PC.
+      );
+
+   -- test second SHR
+   fromRAM_s <= toRAM_s + 1;
+   
 end Behavioral;
 

@@ -120,6 +120,25 @@ begin
     end if;
   end process;
 
+
+----------------------------------------------------------------------------------
+-- Digital Clock Manager
+--
+-- sensitivity : sig_50Hz
+-- extra inputs:
+-- outputs     : clk_50Hz
+----------------------------------------------------------------------------------
+  DCM_SP_inst : DCM_SP
+    generic map (
+      CLKFX_DIVIDE   => 1, 
+      CLKFX_MULTIPLY => 1
+      )
+    port map (
+      CLKFX => clk_50Hz,  --  1MHz out
+      CLKIN => sig_50Hz,     -- 12MHz in
+      RST   => reset_i
+      );
+
 ----------------------------------------------------------------------------------
 -- Pulse Generator
 --
@@ -209,8 +228,39 @@ begin
     end if;
   end process;
 
+  -- XESS
+  -------------------------------------------------------------------------
+  -- JTAG entry point.
+  -------------------------------------------------------------------------
 
-  -- DEBUG
+  -- Main entry point for the JTAG signals between the PC and the FPGA.
+  UBscanToHostIo : BscanToHostIo
+    port map (
+      inShiftDr_o => inShiftDr_s,
+      drck_o      => drck_s,
+      tdi_o       => tdi_s,
+      tdo_i       => tdo_s
+      );
+
+  -------------------------------------------------------------------------
+  -- Shift-register.
+  -------------------------------------------------------------------------
+
+  -- This is the shift-register module between blinker and JTAG entry point.
+  UHostIoToBlinker : HostIoToDut
+    generic map (ID_G => "00001001")    -- The identifier used by the PC.
+    port map (
+      -- Connections to the BscanToHostIo JTAG entry-point module.
+      inShiftDr_i     => inShiftDr_s,
+      drck_i          => drck_s,
+      tdi_i           => tdi_s,
+      tdo_o           => tdo_s,
+      -- Connections to the blinker.
+      vectorToDut_o   => toServo_s,   -- From PC to servo.
+      vectorFromDut_i => fromServo_s  -- From servo to PC.
+      );
+
+
 ----------------------------------------------------------------------------------
 -- DIJON pulse measurement
 --

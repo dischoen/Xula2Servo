@@ -32,22 +32,20 @@ USE ieee.std_logic_1164.ALL;
 -- arithmetic functions with Signed or Unsigned values
 USE ieee.numeric_std.ALL;
  
-ENTITY servi_tb IS
-END servi_tb;
+ENTITY servo_tb IS
+END servo_tb;
  
-ARCHITECTURE behavior OF servi_tb IS 
+ARCHITECTURE behavior OF servo_tb IS 
  
     -- Component Declaration for the Unit Under Test (UUT)
- 
-    COMPONENT erlkoenig
-    PORT(
-         clk_i     : IN  std_logic;
-         pos_i     : IN  STD_LOGIC_VECTOR(10 downto 0);
-         blinker_o : OUT  std_logic;
-         reset_i   : in std_logic
-        );
-    END COMPONENT;
-    
+     
+component servo is
+  Port ( clk_i : in  STD_LOGIC;
+         reset_i : in STD_LOGIC;
+         pos_i : in std_logic_vector(10 downto 0);
+         servo_o : out std_logic);
+end servo;
+
 
    --Inputs
    signal clk_i : std_logic := '0';
@@ -55,7 +53,7 @@ ARCHITECTURE behavior OF servi_tb IS
    signal reset_i : std_logic := '0';
 
  	--Outputs
-   signal blinker_o : std_logic;
+   signal servo_o : std_logic;
 
    -- Clock period definitions
    constant clk_i_period : time := 83.3333 ns;
@@ -63,12 +61,12 @@ ARCHITECTURE behavior OF servi_tb IS
 BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
-   uut: erlkoenig PORT MAP (
-          clk_i => clk_i,
-          pos_i => pos_i,
-          blinker_o => blinker_o,
-			 reset_i => reset_i
-        );
+    uut: servo PORT MAP (
+        clk_i => clk_i,
+        pos_i => pos_i,
+        servo_o => blinker_o,
+        reset_i => reset_i
+    );
 
    -- Clock process definitions
    clk_i_process :process

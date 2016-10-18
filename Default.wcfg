@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="D:/local/src/xula/Xula2Servo/servo_tb2_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="commonpckg" />
+            <top_module name="hostiopckg" />
+            <top_module name="numeric_std" />
+            <top_module name="servo_tb2" />
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
+            <top_module name="std_logic_unsigned" />
+            <top_module name="textio" />
+            <top_module name="vcomponents" />
+            <top_module name="vital_primitives" />
+            <top_module name="vital_timing" />
+            <top_module name="vpkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="5" />
+   <wvobject fp_name="/servo_tb2/clk_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/reset_i" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/pos_i" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">pos_i[10:0]</obj_property>
+      <obj_property name="ObjectShortName">pos_i[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/servo_o" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">servo_o</obj_property>
+      <obj_property name="ObjectShortName">servo_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/uut/clk_1mhz" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_1mhz</obj_property>
+      <obj_property name="ObjectShortName">clk_1mhz</obj_property>
+   </wvobject>
+</wave_config>

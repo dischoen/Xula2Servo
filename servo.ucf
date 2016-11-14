@@ -1,2 +1,3 @@
-net clk_i     loc=a9;  # 12 MHz input clock.
+net clk_i   loc=a9;  # 12 MHz input clock.
 net servo_o loc=t7;  # servo output to LED.
+net led_o   loc=r7;  # servo output to LED.

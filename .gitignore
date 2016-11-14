@@ -14,16 +14,12 @@ xilinxsim.ini
 *.wdb
 *.xml
 *.xrpt
-HostIoToRam.lso
-HostIoToRam.syr
-HostIoToRam.xst
 _ngo/
 _xmsgs/
 isim/
 iseconfig/
 servo.bld
 servo.gise
-servo.lso
 servo.ncd
 servo.ngc
 servo.ngd
@@ -33,12 +29,10 @@ servo.par
 servo.pcf
 servo.ptwx
 servo.stx
-servo.syr
 servo.twr
 servo.twx
 servo.unroutes
 servo.xpi
-servo.xst
 servo_guide.ncd
 servo_map.map
 servo_map.mrp
@@ -48,3 +42,7 @@ servo_pad.csv
 servo_pad.txt
 xlnx_auto_0_xdb/
 xst/
+*.pyc
+*.syr
+*.lso
+*.xst

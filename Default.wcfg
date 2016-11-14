@@ -5,9 +5,8 @@
    <db_ref_list>
       <db_ref path="D:/local/src/xula/Xula2Servo/servo_tb2_isim_beh.wdb" id="1" type="auto">
          <top_modules>
-            <top_module name="commonpckg" />
-            <top_module name="hostiopckg" />
             <top_module name="numeric_std" />
+            <top_module name="servo_comp" />
             <top_module name="servo_tb2" />
             <top_module name="std_logic_1164" />
             <top_module name="std_logic_arith" />
@@ -20,7 +19,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="5" />
+   <WVObjectSize size="11" />
    <wvobject fp_name="/servo_tb2/clk_i" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clk_i</obj_property>
       <obj_property name="ObjectShortName">clk_i</obj_property>
@@ -40,5 +39,29 @@
    <wvobject fp_name="/servo_tb2/uut/clk_1mhz" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">clk_1mhz</obj_property>
       <obj_property name="ObjectShortName">clk_1mhz</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/uut/h" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">h</obj_property>
+      <obj_property name="ObjectShortName">h</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/uut/counting" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">counting</obj_property>
+      <obj_property name="ObjectShortName">counting</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/uut/cnt" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">cnt[10:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/uut/reported" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">reported[10:0]</obj_property>
+      <obj_property name="ObjectShortName">reported[10:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/uut/d2" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">d2</obj_property>
+      <obj_property name="ObjectShortName">d2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/servo_tb2/uut/d3" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">d3</obj_property>
+      <obj_property name="ObjectShortName">d3</obj_property>
    </wvobject>
 </wave_config>

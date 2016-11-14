@@ -20,7 +20,10 @@
 from xstools.xsdutio import *  # Import funcs/classes for PC <=> FPGA link.
 import time
 import types
+import sys
 
+import logging
+#logging.root.setLevel(logging.DEBUG)
 print '''
 ##################################################################
 # This program tests the interface between the host PC and the FPGA 
@@ -33,12 +36,12 @@ SERVO_ID = 9  # This is the identifier for the servo in the FPGA.
 RAM_ID = 10   # Accordingly, for the RAM
 
 # Create a servo intfc obj with two inputs (1 and 11 bits) and one 11-bit output.
-toDUT = [ 11, # pos_i
-           1  # reset_i
+toDUT = [ 11 # pos_i
+          , 1  # reset_i
+          , 1  # led_i
           ]
-fromDUT = [ 11, # pulselen
-            11, # hcnt
-             1  # flag1
+fromDUT = [ 11 # pulselen
+           ,11 # hcnt
             ]
 
 
@@ -66,20 +69,68 @@ class DjDut(object):
                 print
             time.sleep(st)
 
-servo = DjDut("servo", USB_ID, SERVO_ID, toDUT, fromDUT)
-ram = DjDut("RAM", USB_ID, RAM_ID, [12], [12])
-ram.w(1234)
-ram.r()
+class Servo(DjDut):
+    def __init__(self, usbid, dutid, indata, outdata):
+        super(Servo, self).__init__("servo", usbid, dutid, indata, outdata)
 
-servo.r()
-servo.w(0, 1) # reset
-time.sleep(0.01)
+    def reset(self):
+        self.w(0, 1, 1) # reset
+        time.sleep(0.1)
+        self.w(0, 0, 0)
+        self.r()
 
-servo.r()
-servo.w(0, 0)
+    def pos(self, pos):
+        self.w(pos, 0, 0)
 
-for p in range(600, 1600, 200):
-    servo.w(p, 0)
-    time.sleep(0.1)
-    servo.r(15)
-    time.sleep(1)
+    def ledOn(self):
+        self.w(0,0,1)
+
+    def ledOff(self):
+        self.w(0,0,0)
+
+    def ta(self):
+        self.ledOn()
+        time.sleep(0.5)
+        self.ledOff()
+        time.sleep(0.2)
+
+    def taaa(self):
+        self.ledOn()
+        time.sleep(1.0)
+        self.ledOff()
+        time.sleep(0.2)
+
+    def beethoven(self):
+        self.ta()
+        self.ta()
+        self.ta()
+        self.taaa()
+
+
+#ram = DjDut("RAM", USB_ID, RAM_ID, [12], [12])
+#ram.w(1234)
+#ram.r()
+
+
+
+if __name__ == "__main__":
+    servo = Servo(USB_ID, SERVO_ID, toDUT, fromDUT)
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "ON":
+            servo.ledOn()
+        elif sys.argv[1] == "OFF":
+            servo.ledOff()
+        elif sys.argv[1] == "5TE":
+            servo.beethoven()
+        else:
+            servo.reset()
+            servo.pos(int(sys.argv[1]))
+            servo.r(5)
+    else:
+        servo.reset()
+        for p in [2000, 1400, 1000]:
+            servo.pos(p)
+            time.sleep(0.01)
+            servo.r(5)
+            time.sleep(1)
+    
